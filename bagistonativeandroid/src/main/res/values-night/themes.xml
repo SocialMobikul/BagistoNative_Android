@@ -1,0 +1,33 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Demo" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your dark theme here. -->
+        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+
+        <!-- Recommended for Theme Component. -->
+        <item name="toolbarNavigationButtonStyle">@style/Widget.AndroidDemo.Toolbar.Navigation.Tinted</item>
+
+        <!--        for fit system window-->
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+
+    <!-- Recommended for Theme Component. -->
+    <style name="Widget.AndroidDemo.Toolbar.Navigation.Tinted" parent="Widget.AppCompat.Toolbar.Button.Navigation">
+        <item name="tint">?colorOnSurface</item>
+    </style>
+
+    <style name="Theme.FullScreen" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Make content fullscreen -->
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+
+        <!-- Remove status and nav bar (for immersive mode) -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/black</item>
+
+        <!-- Make background black/white or any solid color -->
+        <item name="android:windowBackground">@color/white</item>
+    </style>
+
+</resources>
