@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.masilotti.demo"
+    namespace = "com.mobikul.bagisto"
     compileSdk = 35
 
     defaultConfig {
@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.androidx.camera.lifecycle) // Required for Review Prompt Component.
     debugImplementation(libs.androidx.ui.tooling)
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
@@ -78,7 +79,8 @@ dependencies {
     // Compose
     implementation("androidx.navigation:navigation-compose:2.7.6")
 
-    // Object Detector
+    // Object Detector & Labeling
+    implementation("com.google.mlkit:object-detection:17.0.0")
     implementation("com.google.mlkit:image-labeling:17.0.7")
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
@@ -102,6 +104,9 @@ dependencies {
 
     // ML Kit Text Recognition
     implementation("com.google.mlkit:text-recognition:16.0.0")
+
+    // App Startup
+    implementation("androidx.startup:startup-runtime:1.1.1")
 
 
 }

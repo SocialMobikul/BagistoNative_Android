@@ -39,6 +39,17 @@
         android:requestLegacyExternalStorage="true"
         tools:targetApi="31">
 
+        <!-- Startup Initialize for library preferences and theme -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="com.mobikul.bagisto.utils.BagistoSdkInitializer"
+                android:value="androidx.startup" />
+        </provider>
+
         <!-- Add the FileProvider here -->
         <provider
             android:name="androidx.core.content.FileProvider"
