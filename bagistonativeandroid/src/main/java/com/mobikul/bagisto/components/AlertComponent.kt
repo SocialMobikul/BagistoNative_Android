@@ -1,4 +1,4 @@
-package com.mobikul.bagisto.components // Replace with your package name.
+package com.mobikul.bagisto.components
 
 import android.util.Log
 import androidx.appcompat.app.AlertDialog

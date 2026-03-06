@@ -47,7 +47,7 @@ class LocationHelper(context: Context) {
     fun startLocationUpdates() {
         val locationRequest = LocationRequest.Builder(
             Priority.PRIORITY_HIGH_ACCURACY,
-            10000 // 10 seconds interval
+            10000
         ).build()
 
         fusedLocationClient.requestLocationUpdates(

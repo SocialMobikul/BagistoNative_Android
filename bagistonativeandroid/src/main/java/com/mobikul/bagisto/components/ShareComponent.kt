@@ -1,4 +1,4 @@
-package com.mobikul.bagisto.components // Replace with your package name.
+package com.mobikul.bagisto.components
 
 import android.content.Intent
 import android.util.Log
@@ -74,24 +74,6 @@ class ShareComponent(
         val url: String
     )
 }
-
-//@Composable
-//private fun ToolbarButton(onClick: () -> Unit) {
-//    Button(
-//        onClick = onClick,
-//        colors = ButtonDefaults.buttonColors(
-//            containerColor = Color.Transparent,
-//            contentColor = Color.Black
-//        )
-//    ) {
-//        Text(
-//            text = "share",
-//            fontFamily = FontFamily(Font(R.font.material_symbols)),
-//            fontSize = 28.sp,
-//            style = TextStyle(fontFeatureSettings = "liga")
-//        )
-//    }
-//}
 
 @Composable
 private fun ToolbarButton(onClick: () -> Unit) {

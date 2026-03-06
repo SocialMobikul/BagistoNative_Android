@@ -1,8 +1,5 @@
 package com.mobikul.bagisto.components
 
-//class ImageSearchComponent {
-//}
-
 import android.util.Log
 import dev.hotwire.core.bridge.BridgeComponent
 import dev.hotwire.core.bridge.BridgeDelegate
@@ -32,6 +29,3 @@ class ImageSearchComponent(
         @SerialName("androidImage") val imageName: String?
     )
 }
-
-
-

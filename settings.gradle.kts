@@ -21,4 +21,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "BagistoAndroidRunner"
 include(":bagistonativeandroid")
-//include(":bagistoandroidrunner")

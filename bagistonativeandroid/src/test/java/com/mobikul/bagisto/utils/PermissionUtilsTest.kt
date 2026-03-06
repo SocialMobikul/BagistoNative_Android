@@ -23,7 +23,6 @@ class PermissionUtilsTest {
         mockkStatic(Looper::class)
         mockkStatic(Log::class)
 
-        // Mock Log methods
         every { Log.d(any<String>(), any<String>()) } returns 0
         every { Log.e(any<String>(), any<String>()) } returns 0
         every { Log.w(any<String>(), any<String>()) } returns 0
@@ -98,7 +97,6 @@ class PermissionUtilsTest {
 
     @Test
     fun `permission result sealed class has correct types`() {
-        // Verify sealed class structure
         val granted = PermissionUtils.PermissionResult.Granted
         val denied = PermissionUtils.PermissionResult.Denied(listOf("test"))
         val permanentlyDenied = PermissionUtils.PermissionResult.PermanentlyDenied(listOf("test"))
@@ -112,9 +110,7 @@ class PermissionUtilsTest {
 
     @Test
     fun `interface implementation is correct`() {
-        // Verify PermissionUtils implements PermissionManager
         val manager: PermissionManager = PermissionUtils
         assertNotNull(manager)
     }
 }
-

@@ -34,7 +34,7 @@ fun ToolbarButton(
         "location" -> Icons.Default.MyLocation
         "logout" -> Icons.AutoMirrored.Filled.Logout
         "download" -> Icons.Default.Download
-        else -> Icons.Default.Help // fallback icon
+        else -> Icons.Default.Help
     }
 
     IconButton(

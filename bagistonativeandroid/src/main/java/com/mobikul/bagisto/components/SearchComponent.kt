@@ -1,4 +1,4 @@
-package com.mobikul.bagisto.components // Replace with your package name.
+package com.mobikul.bagisto.components
 
 import android.util.Log
 import android.view.Gravity
@@ -88,7 +88,6 @@ class SearchComponent(
         Log.d(TAG, "collapseSearchView called")
         if (!searchView.isIconified) {
             searchView.isIconified = true
-//            searchView.onActionViewCollapsed()
         }
         searchView.setQuery("", false)
         searchView.clearFocus()
@@ -99,7 +98,6 @@ class SearchComponent(
             ViewGroup.LayoutParams.MATCH_PARENT
         ).apply { gravity = Gravity.END }
         
-        // Restore visibility of dynamic buttons (ID 1 from other components)
         val toolbar = fragment.toolbarForNavigation()
         toolbar?.findViewById<View>(1)?.visibility = View.VISIBLE
 
@@ -110,7 +108,6 @@ class SearchComponent(
         val toolbar = fragment.toolbarForNavigation() ?: return
         Log.d(TAG,"SearchComponent addSearchView (remove-then-add)")
         
-        // Remove existing first (user recommendation)
         toolbar.findViewById<View>(searchId)?.let { 
             Log.d(TAG, "Removing existing search view before adding new one")
             toolbar.removeView(it) 
@@ -144,7 +141,6 @@ class SearchComponent(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
-                // Hide other bridge buttons (ID 1)
                 toolbar.findViewById<View>(1)?.visibility = View.GONE
             }
 

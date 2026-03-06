@@ -1,8 +1,5 @@
 package com.mobikul.bagisto.components
 
-//class DynamicButtonComponent {
-//}
-
 import android.content.Intent
 import android.util.Log
 import android.view.Gravity
@@ -33,7 +30,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mobikul.bagisto.R // Replace with your package name.
+import com.mobikul.bagisto.R
 import com.mobikul.bagisto.components.features.QrScannerScreen
 import com.mobikul.bagisto.components.features.image_search.ImageSearchScreen
 import com.mobikul.bagisto.helper.ToastHelper
@@ -74,7 +71,6 @@ class DynamicButtonComponent(
     private val backPressedCallback = object : OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
             Log.d(TAG, "DynamicButtonComponent handleOnBackPressed fallback")
-            // Priority 1: Dismiss scanner/image search overlay if open
             activeOverlay?.let { overlay ->
                 Log.d(TAG, "Dismissing active overlay via back press")
                 overlay.visibility = View.GONE
@@ -83,7 +79,6 @@ class DynamicButtonComponent(
                 isEnabled = false
                 return
             }
-            // Priority 2: Collapse search view if expanded
             val toolbar = fragment.toolbarForNavigation()
             val searchView = toolbar?.findViewById<SearchView>(searchId)
             if (searchView != null && !searchView.isIconified) {
@@ -105,7 +100,6 @@ class DynamicButtonComponent(
         when (message.event) {
             "connect","home"  -> {
                 lastMessage = message
-//                addSearchView(message)
                 addHomeButton(message)
             }
             "product" -> {
@@ -127,11 +121,9 @@ class DynamicButtonComponent(
             "modaldismiss" -> {
                 handleModelDismiss(message)
             }
-//            "product" -> addProductButton()
             "empty" -> {
                 lastMessage = null
                 removeButton()
-                // Only hide search explicitly when the dynamic area is cleared
                 fragment.toolbarForNavigation()?.findViewById<View>(searchId)?.let {
                     fragment.toolbarForNavigation()?.removeView(it)
                 }
@@ -183,7 +175,6 @@ class DynamicButtonComponent(
         ).apply { gravity = Gravity.END }
         
         val toolbar = fragment.toolbarForNavigation()
-        // Restore visibility of this component's button
         toolbar?.findViewById<View>(buttonId)?.visibility = View.VISIBLE
 
         hideKeyboard()
@@ -199,7 +190,6 @@ class DynamicButtonComponent(
         )
 
         toolbar.setNavigationOnClickListener {
-            // CLOSE icon behavior
             replyTo(message.event, jsonData = """{"type":"modal_dismiss"}""")
         }
     }
@@ -242,9 +232,6 @@ class DynamicButtonComponent(
                         imageName = if (ThemeStateHolder.isDarkTheme.value) "dark_mode" else "sunny",
                         onClick = {
                             if (ThemeStateHolder.isDarkTheme.value){
-                                // This is tricky as we are toggling. 
-                                // But since we are calling setDefaultNightMode, 
-                                // the user's click should correspond to what they SEE.
                                 replyTo(message.event, jsonData = """{"type": "theme","code": "light"}""")
                             }
                             else{
@@ -270,28 +257,11 @@ class DynamicButtonComponent(
         Log.d("check_event", "add button message 2 -> ${message.data<MessageData>()}")
         val data = message.data<MessageData>() ?: return
         Log.d("check_event", "add button data -> ${data}")
-//        val cartCount = JSONObject(message.jsonData).getString("cart").toInt()
-//        ViewModelProvider.get(SharedViewModel::class.java).updateCartCount(cartCount)
         removeButton()
         val composeView = ComposeView(fragment.requireContext()).apply {
             id = buttonId
             setContent {
                 Row {
-//                    ToolbarButton(
-//                        imageName = "image_search", // Make sure this icon exists in your font
-//                        onClick = {
-//                            // For Camera Permission
-//                            PermissionUtils.checkAndRequestCameraPermission(fragment.requireActivity()) { granted ->
-//                                if (granted) {
-//                                    showImageSearchScreen(message)
-//                                }
-//                                else{
-//                                    ToastHelper.showLongToast(fragment.requireContext(),fragment.requireContext().getString(R.string.camera_permission_not_granted))
-//                                }
-//                            }
-//                            //showImageSearchScreen(message)
-//                        }
-//                    )
                     ToolbarButton(
                         imageName = "image_search",
                         onClick = {
@@ -322,52 +292,6 @@ class DynamicButtonComponent(
                                                     backPressedCallback.isEnabled = false
                                                 }
                                             )
-
-
-//                                            var showSelection by remember { mutableStateOf(true) }
-//                                            var searchType by remember { mutableStateOf<SearchType?>(null) }
-//
-//                                            if (showSelection) {
-//                                                ScanTypeSelectionDialog(
-//                                                    onImageSelected = {
-//                                                        searchType = SearchType.IMAGE
-//                                                        showSelection = false
-//                                                    },
-//                                                    onTextSelected = {
-//                                                        searchType = SearchType.TEXT
-//                                                        showSelection = false
-//                                                    },
-//                                                    onDismiss = {
-//                                                        overlay.visibility = View.GONE
-//                                                        overlay.removeAllViews()
-//                                                    }
-//                                                )
-//                                            } else when (searchType) {
-//                                                SearchType.IMAGE -> ImageSearchScreen(
-//                                                    onLabelSelected = { label ->
-//                                                        overlay.visibility = View.GONE
-//                                                        overlay.removeAllViews()
-//                                                        replyTo(message.event, """{"type": "scan", "code": "$label"}""")
-//                                                    },
-//                                                    onBack = {
-//                                                        overlay.visibility = View.GONE
-//                                                        overlay.removeAllViews()
-//                                                    }
-//                                                )
-//                                                SearchType.TEXT -> TextSearchScreen(
-//                                                    onTextDetected = { text ->
-//                                                        Log.d(TAG, "onTextDetected -> ${text}")
-//                                                        overlay.visibility = View.GONE
-//                                                        overlay.removeAllViews()
-//                                                        replyTo(message.event, """{"type": "scan", "code": "$text"}""")
-//                                                    },
-//                                                    onBack = {
-//                                                        overlay.visibility = View.GONE
-//                                                        overlay.removeAllViews()
-//                                                    }
-//                                                )
-//                                                null -> Unit
-//                                            }
                                         }
                                     }
                                     overlay.addView(composeView)
@@ -384,7 +308,6 @@ class DynamicButtonComponent(
                     ToolbarButton(
                         imageName = "qr_code_scanner",
                         onClick = {
-                            // For Camera Permission
                             PermissionUtils.checkAndRequestCameraPermission(fragment.requireActivity()) { granted ->
                                 if (granted) {
                                     showFullScreenScanner(message)
@@ -415,7 +338,6 @@ class DynamicButtonComponent(
 
     private fun removeButton() {
         val toolbar = fragment.toolbarForNavigation()
-        // Only remove the dynamic button, don't touch searchId here to avoid killing SearchComponent
         toolbar?.findViewById<View>(buttonId)?.let { toolbar.removeView(it) }
     }
 
@@ -522,7 +444,6 @@ class DynamicButtonComponent(
 
 
 
-
     private fun share(url: String) {
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
@@ -541,7 +462,7 @@ class DynamicButtonComponent(
     ) {
         Box(
             modifier = Modifier
-                .size(48.dp) // Adjust based on your TopAppBar height
+                .size(48.dp)
                 .padding(end = 8.dp),
             contentAlignment = Alignment.TopEnd
         ) {
@@ -576,7 +497,6 @@ class DynamicButtonComponent(
         val toolbar = fragment.toolbarForNavigation() ?: return
         Log.d(TAG,"DynamicButton addSearchView (remove-then-add)")
         
-        // Remove existing first
         toolbar.findViewById<View>(searchId)?.let { 
             Log.d(TAG, "Removing existing search view before adding new one")
             toolbar.removeView(it) 
@@ -608,7 +528,6 @@ class DynamicButtonComponent(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
-                // Hide dynamic buttons
                 toolbar.findViewById<View>(buttonId)?.visibility = View.GONE
             }
 

@@ -18,16 +18,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import java.util.Collections
 
-/**
- * PRODUCTION-READY PERMISSION FRAMEWORK
- * 
- * Features:
- * - Rotation-Safe (No Activity Leaks)
- * - Thread-Safe (Enforces Main Thread)
- * - Race-Condition Protected (Unique Request Tags)
- * - Rationale-Aware (Handles "Don't ask again")
- * - Async-Consistent (All callbacks delivered on next frame)
- */
 interface PermissionManager {
     fun checkAndRequestCameraPermission(context: Context, callback: (Boolean) -> Unit)
     fun checkAndRequestLocationPermission(context: Context, callback: (Boolean) -> Unit)
@@ -40,9 +30,7 @@ object PermissionUtils : PermissionManager {
     private const val TAG = "PermissionUtils"
     private const val SETTINGS_DELAY = 1500L
     
-    // In-flight request tracking
     private val activeRequests = Collections.synchronizedSet(mutableSetOf<String>())
-    // Callback registry that survives recreate but doesn't leak context
     private val callbackMap = mutableMapOf<String, (Boolean) -> Unit>()
 
     private tailrec fun Context.findActivity(): FragmentActivity? = when (this) {
@@ -63,12 +51,10 @@ object PermissionUtils : PermissionManager {
                 }
             } else false
 
-            // Deliver and cleanup
             val callback = callbackMap[tag]
             callbackMap.remove(tag)
             activeRequests.remove(tag)
             
-            // Post to main thread to ensure consistency and avoid transaction issues
             Handler(Looper.getMainLooper()).post {
                 callback?.invoke(isGranted)
                 
@@ -79,7 +65,6 @@ object PermissionUtils : PermissionManager {
                 }
             }
 
-            // Cleanup fragment
             if (isAdded && !parentFragmentManager.isStateSaved) {
                 parentFragmentManager.beginTransaction().remove(this).commitAllowingStateLoss()
             }
@@ -115,7 +100,7 @@ object PermissionUtils : PermissionManager {
         }
 
         val tag = "${label}_REQUEST"
-        if (!activeRequests.add(tag)) return // Protection against double calls
+        if (!activeRequests.add(tag)) return
 
         callbackMap[tag] = callback
         
@@ -123,9 +108,8 @@ object PermissionUtils : PermissionManager {
         try {
             activity.supportFragmentManager.beginTransaction()
                 .add(fragment, tag)
-                .commitAllowingStateLoss() // Safer than commitNow
+                .commitAllowingStateLoss()
 
-            // Launch on next frame to ensure fragment is attached and ready
             Handler(Looper.getMainLooper()).post {
                 if (fragment.isAdded) {
                     fragment.request(permissions)
@@ -171,7 +155,6 @@ object PermissionUtils : PermissionManager {
     private fun handle(context: Context, perms: Array<String>, label: String, callback: (Boolean) -> Unit) {
         val allGranted = perms.all { ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED }
         if (allGranted) {
-            // Always post to next frame for consistency
             Handler(Looper.getMainLooper()).post { callback(true) }
             return
         }

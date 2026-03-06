@@ -24,9 +24,6 @@ class LogoutComponent(
 
     override fun onReceive(message: Message) {
         Log.d(TAG, "LogoutComponent message -> ${message}")
-//        when(message.event){
-//            "connect" -> addLogoutButton(message)
-//        }
 
     }
 

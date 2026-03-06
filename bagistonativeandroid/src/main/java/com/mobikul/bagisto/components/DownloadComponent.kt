@@ -56,7 +56,6 @@ class DownloadComponent(
 
     private fun startDownload(downloadUrl: String, fileName: String) {
         try {
-            // Clean up any existing receiver first
             unregisterReceiver()
 
             val request = DownloadManager.Request(Uri.parse(downloadUrl))

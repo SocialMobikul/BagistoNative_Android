@@ -8,11 +8,6 @@ import dev.hotwire.navigation.activities.HotwireActivity
 import dev.hotwire.navigation.destinations.HotwireDestinationDeepLink
 import dev.hotwire.navigation.fragments.HotwireWebFragment
 
-/**
- * Custom WebFragment that handles hardware back button for WebView navigation
- *
- * SearchView back press is handled by SearchComponent.setOnKeyListener()
- */
 @HotwireDestinationDeepLink(uri = "hotwire://fragment/web")
 class BagistoWebFragment : HotwireWebFragment() {
     private val TAG = "BagistoWebFragment"
@@ -49,12 +44,9 @@ class BagistoWebFragment : HotwireWebFragment() {
                     navigator.pop()
                 }
                 else -> {
-                    // Centralized hack: If we are at start destination but have a toolbar icon (Back/Close), 
-                    // try to trigger it. This handles modals and custom back logic from components.
                     val toolbar = toolbarForNavigation()
                     if (toolbar != null && toolbar.navigationIcon != null) {
                         Log.d(TAG, "At start destination but toolbar has navigation icon - triggering it")
-                        // Find and click the navigation button inside the toolbar
                         for (i in 0 until toolbar.childCount) {
                             val child = toolbar.getChildAt(i)
                             if (child is android.widget.ImageButton) {
@@ -81,7 +73,3 @@ class BagistoWebFragment : HotwireWebFragment() {
         )
     }
 }
-
-
-
-

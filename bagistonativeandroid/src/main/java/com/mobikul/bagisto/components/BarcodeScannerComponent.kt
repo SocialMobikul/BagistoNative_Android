@@ -1,8 +1,5 @@
 package com.mobikul.bagisto.components
 
-//class BarcodeScannerComponent {
-//}
-
 import android.util.Log
 import android.view.Gravity
 import android.view.ViewGroup
@@ -51,10 +48,6 @@ class BarcodeScannerComponent(
         val composeView = ComposeView(fragment.requireContext()).apply {
             id = buttonId
             setContent {
-//                ToolbarButton(
-//                    title = data.title,
-//                    imageName = data.imageName,
-//                    onClick = { replyTo(message.event) })
                 ToolbarButton(
                     onClick = {
                         Log.d(TAG,"home icon clicked")
@@ -85,26 +78,6 @@ class BarcodeScannerComponent(
     )
 }
 
-//@Composable
-//private fun ToolbarButton(imageName: String, onClick: () -> Unit) {
-//    Button(
-//        onClick = onClick,
-//        colors = ButtonDefaults.buttonColors(
-//            containerColor = Color.Transparent,
-//            contentColor = Color.Black
-//        )
-//    ) {
-//        Text(
-//            text = imageName,
-//            fontFamily = FontFamily(Font(R.font.material_symbols)),
-//            fontSize = 28.sp,
-//            style = TextStyle(fontFeatureSettings = "liga")
-//        )
-//    }
-//}
-
-
-
 @Composable
 private fun ToolbarButton(onClick: () -> Unit) {
     IconButton(onClick = onClick) {
@@ -115,4 +88,3 @@ private fun ToolbarButton(onClick: () -> Unit) {
         )
     }
 }
-

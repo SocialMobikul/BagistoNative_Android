@@ -55,13 +55,11 @@ fun QrScannerScreen(
     var scanned by remember { mutableStateOf(false) }
     var hasFlash by remember { mutableStateOf(false) }
 
-    // Animation state
     var isMovingDown by remember { mutableStateOf(true) }
     var lineY by remember { mutableStateOf(0f) }
-    val frameDuration = 16L // ~60fps
-    val animationDuration = 3000L // 3 seconds for full sweep
+    val frameDuration = 16L
+    val animationDuration = 3000L
 
-    // Animation controller
     LaunchedEffect(Unit) {
         while (!scanned) {
             val startTime = System.currentTimeMillis()
@@ -86,7 +84,6 @@ fun QrScannerScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Camera Preview
         AndroidView(
             factory = { ctx ->
                 PreviewView(ctx).apply {
@@ -105,7 +102,7 @@ fun QrScannerScreen(
 
                     val imageAnalysis = ImageAnalysis.Builder()
                         .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                        .setTargetResolution(android.util.Size(1080, 1920)) // Add target resolution
+                        .setTargetResolution(android.util.Size(1080, 1920))
                         .build()
                         .also {
                             it.setAnalyzer(
@@ -118,7 +115,7 @@ fun QrScannerScreen(
                                             onBack()
                                         }
                                     },
-                                    isAlreadyScanned = { scanned } // Pass the state
+                                    isAlreadyScanned = { scanned }
                                 )
                             )
                         }
@@ -145,9 +142,7 @@ fun QrScannerScreen(
             modifier = Modifier.fillMaxSize()
         )
 
-        // Scanner Frame UI
         Box(modifier = Modifier.fillMaxSize()) {
-            // Dark overlay outside scanning area
             Canvas(modifier = Modifier.fillMaxSize()) {
                 val width = size.width
                 val height = size.height
@@ -155,7 +150,6 @@ fun QrScannerScreen(
                 val left = (width - frameSize) / 2
                 val top = (height - frameSize) / 2
 
-                // Draw dark overlay
                 drawRect(
                     color = Color.Black.copy(alpha = 0.6f),
                     size = Size(width, top)
@@ -177,7 +171,6 @@ fun QrScannerScreen(
                 )
             }
 
-            // Single Animated scanning line
             Canvas(modifier = Modifier.fillMaxSize()) {
                 val width = size.width
                 val height = size.height
@@ -194,7 +187,6 @@ fun QrScannerScreen(
                 )
             }
 
-            // Flash toggle button at bottom center
             Box(
                 modifier = Modifier
                     .fillMaxSize()

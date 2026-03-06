@@ -57,11 +57,9 @@ class ThemeModeComponent(
         try {
             val activity = fragment.activity ?: return
             
-            // Get theme colors
             val surfaceColor = getThemeColor(activity, com.google.android.material.R.attr.colorSurface)
             val onSurfaceColor = getThemeColor(activity, com.google.android.material.R.attr.colorOnSurface)
             
-            // Update all toolbars in the view hierarchy
             val rootView = activity.findViewById<ViewGroup>(android.R.id.content)
             rootView?.let { updateViewsRecursively(it, surfaceColor, onSurfaceColor) }
         } catch (e: Exception) {
@@ -88,7 +86,6 @@ class ThemeModeComponent(
                     view.menu.getItem(i)?.icon?.setTint(iconColor)
                 }
                 
-                // Continue to children of toolbar (custom views like Search or Compose)
                 for (i in 0 until view.childCount) {
                     updateViewsRecursively(view.getChildAt(i), backgroundColor, iconColor)
                 }
@@ -97,8 +94,6 @@ class ThemeModeComponent(
                 tintSearchView(view, iconColor)
             }
             is ViewGroup -> {
-                // ComposeView is a ViewGroup, invalidating it helps trigger recomposition
-                // when combined with the state change in ThemeStateHolder
                 if (view.javaClass.name.contains("ComposeView")) {
                     view.invalidate()
                 }
@@ -111,20 +106,16 @@ class ThemeModeComponent(
 
     private fun tintSearchView(searchView: SearchView, color: Int) {
         try {
-            // Tint the search icon (mag glass)
             val searchIcon = searchView.findViewById<ImageView>(androidx.appcompat.R.id.search_mag_icon)
             searchIcon?.setColorFilter(color)
 
-            // Tint the close button
             val closeButton = searchView.findViewById<ImageView>(androidx.appcompat.R.id.search_close_btn)
             closeButton?.setColorFilter(color)
 
-            // Tint the edit text
             val searchText = searchView.findViewById<TextView>(androidx.appcompat.R.id.search_src_text)
             searchText?.setTextColor(color)
             searchText?.setHintTextColor(color)
 
-            // Tint the search button (when iconified)
             val searchButton = searchView.findViewById<ImageView>(androidx.appcompat.R.id.search_button)
             searchButton?.setColorFilter(color)
             

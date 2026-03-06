@@ -1,29 +1,5 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
-
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
-
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
-
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
-
 -dontwarn com.google.android.gms.common.annotation.NoNullnessRewrite
 
-############## for allowing push notification in release mode
-# Firebase
 -keep class com.google.firebase.** { *; }
 -keep class com.google.android.gms.** { *; }
 -keep class org.apache.** { *; }
@@ -31,11 +7,9 @@
 -keepnames class javax.servlet.** { *; }
 -keepnames class org.ietf.jgss.** { *; }
 
-# Keep Hotwire classes and annotated fragments
 -keep class dev.hotwire.** { *; }
 -keep @dev.hotwire.navigation.destinations.HotwireDestinationDeepLink class * { *; }
 
-# Keep our SDK Components, Fragments, and Initializers
 -keep class com.mobikul.bagisto.components.** { *; }
 -keep class com.mobikul.bagisto.fragments.** { *; }
 -keep class com.mobikul.bagisto.utils.CustomBridgeComponents { *; }
@@ -43,7 +17,6 @@
 -keep class com.mobikul.bagisto.utils.ThemeStateHolder { *; }
 -keep class com.mobikul.bagisto.utils.AppSharedPreference { *; }
 
-# Needed for Serialization and JSON mapping via Hotwire
 -keepclassmembers class com.mobikul.bagisto.components.** {
     <fields>;
     <init>();

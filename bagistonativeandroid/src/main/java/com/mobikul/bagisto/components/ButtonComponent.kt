@@ -1,4 +1,4 @@
-package com.mobikul.bagisto.components // Replace with your package name.
+package com.mobikul.bagisto.components
 
 import android.util.Log
 import android.view.Gravity
@@ -83,7 +83,6 @@ private fun ToolbarButton(title: String, imageName: String?, onClick: () -> Unit
         imageName?.let {
             Text(
                 text = it,
-                //fontFamily = FontFamily(Font(R.font.material_symbols)),
                 fontSize = 28.sp,
                 style = TextStyle(fontFeatureSettings = "liga")
             )

@@ -17,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-// Add this to ImageSearchScreen.kt or a new file
 @Composable
 fun ScanTypeSelectionDialog(
     onImageSelected: () -> Unit,
@@ -29,7 +28,6 @@ fun ScanTypeSelectionDialog(
         title = { Text("Search by scanning") },
         text = {
             Column {
-                // Image option
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -45,7 +43,6 @@ fun ScanTypeSelectionDialog(
                     Text("Image")
                 }
 
-                // Text option
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

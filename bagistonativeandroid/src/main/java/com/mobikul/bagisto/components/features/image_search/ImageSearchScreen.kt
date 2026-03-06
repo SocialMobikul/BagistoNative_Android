@@ -157,7 +157,7 @@ fun ImageSearchScreen(
                      }
                 }
              }
-         }
+        }
 
         AnimatedVisibility(
             visible = isSuggestionsExpanded,
@@ -187,14 +187,11 @@ fun ImageSearchScreen(
 
     BackHandler {
         when {
-            // Suggestions open → collapse them, mark that we came from expanded state
             isSuggestionsExpanded -> {
                 isSuggestionsExpanded = false
                 collapsedFromExpanded = true
             }
-            // Just collapsed suggestions → close overlay directly (skip photo states)
             collapsedFromExpanded -> onBack()
-            // Normal back traversal through photo states
             searchState == SearchState.RESULT -> searchState = SearchState.CAPTURED
             searchState == SearchState.CAPTURED -> searchState = SearchState.LIVE
             else -> onBack()
@@ -202,34 +199,25 @@ fun ImageSearchScreen(
     }
 }
 
-/**
- * Industry-Grade Hybrid Search with Quality Gates
- * Combines OCR, Image Labeling, and Object Detection with confidence filtering.
- * Reduces garbage values through multi-level validation and deduplication.
- */
 suspend fun runSimplifiedHybridSearch(bitmap: Bitmap): List<String> = withContext(Dispatchers.Default) {
     if (bitmap.isRecycled) return@withContext emptyList()
     
     val inputImage = InputImage.fromBitmap(bitmap, 0)
     val pool = mutableListOf<Pair<String, Float>>()
 
-    // Production-tested thresholds (Google Lens, Pinterest, eBay, Amazon)
-    // Balanced approach: accuracy + recall for e-commerce product search
-    val OCR_CONFIDENCE = 0.6f              // Clear text but realistic (not too strict)
-    val LABEL_THRESHOLD = 0.45f             // Slightly higher to naturally filter meta-labels (Google's approach)
-    val CLASSIFICATION_THRESHOLD = 0.4f    // Balanced object detection
-    val FINAL_MIN_CONFIDENCE = 0.4f        // Practical minimum gate (filters garbage, allows results)
+    val OCR_CONFIDENCE = 0.6f
+    val LABEL_THRESHOLD = 0.45f
+    val CLASSIFICATION_THRESHOLD = 0.4f
+    val FINAL_MIN_CONFIDENCE = 0.4f
 
 
     try {
         coroutineScope {
-            // 1. Text Recognition - With validation
             launch {
                 val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
                 val result = try { recognizer.process(inputImage).await() } catch (e: Exception) { null }
                 result?.textBlocks?.forEach { block ->
                     val text = block.text.trim()
-                    // Multi-level text validation
                     if (isValidOCRText(text)) {
                         synchronized(pool) {
                             pool.add(text to OCR_CONFIDENCE)
@@ -238,7 +226,6 @@ suspend fun runSimplifiedHybridSearch(bitmap: Bitmap): List<String> = withContex
                 }
             }
 
-            // 2. Image Labeling - Confidence-based filtering (Google's approach)
             launch {
                 val labeler = ImageLabeling.getClient(
                     ImageLabelerOptions.Builder()
@@ -253,7 +240,6 @@ suspend fun runSimplifiedHybridSearch(bitmap: Bitmap): List<String> = withContex
                 }
             }
 
-            // 3. Object Detection (Classification) - Confidence-based filtering
             launch {
                 val detector = ObjectDetection.getClient(
                     ObjectDetectorOptions.Builder()
@@ -265,7 +251,7 @@ suspend fun runSimplifiedHybridSearch(bitmap: Bitmap): List<String> = withContex
                 val objects = try { detector.process(inputImage).await() } catch (e: Exception) { emptyList() }
                 synchronized(pool) {
                     objects
-                        .filter { it.labels.isNotEmpty() }  // Only valid detections
+                        .filter { it.labels.isNotEmpty() }
                         .forEach { detectedObject ->
                             detectedObject.labels
                                 .filter { label -> label.confidence >= CLASSIFICATION_THRESHOLD }
@@ -276,34 +262,27 @@ suspend fun runSimplifiedHybridSearch(bitmap: Bitmap): List<String> = withContex
         }
     } catch (e: Exception) { Log.e("SimplifiedSearch", "Error during search", e) }
 
-    // Industry-standard post-processing with quality gates
     return@withContext pool
         .asSequence()
-        .groupBy { it.first.lowercase().trim() }  // Merge duplicates
+        .groupBy { it.first.lowercase().trim() }
         .map { (text, pairs) ->
-            // Keep highest confidence per unique text
             text to (pairs.maxOfOrNull { it.second } ?: 0f)
         }
         .filter { (_, confidence) ->
-            // Absolute quality gate - filter weak results first
             confidence >= FINAL_MIN_CONFIDENCE
         }
         .sortedByDescending { it.second }
-        .take(12)  // Fewer, higher-quality results
+        .take(12)
         .map { it.first }
         .toList()
 }
 
-/**
- * Validates OCR text to filter garbage values
- * Removes: repeated characters (lllll), symbol-only strings, numbers-only, gibberish patterns
- */
 private fun isValidOCRText(text: String): Boolean {
-    if (text.length < 3) return false  // Too short
-    if (text.matches(Regex("^[^a-zA-Z0-9]*$"))) return false  // Only symbols
-    if (!text.any { it.isLetterOrDigit() }) return false  // No alphanumeric
-    if (text.matches(Regex("^(\\w)\\1{5,}$"))) return false  // Repeated chars (lllll, iiiii)
-    if (text.matches(Regex("^[0-9]*$"))) return false  // Pure numbers (product codes excluded)
+    if (text.length < 3) return false
+    if (text.matches(Regex("^[^a-zA-Z0-9]*$"))) return false
+    if (!text.any { it.isLetterOrDigit() }) return false
+    if (text.matches(Regex("^(\\w)\\1{5,}$"))) return false
+    if (text.matches(Regex("^[0-9]*$"))) return false
 
     return true
 }
@@ -335,9 +314,3 @@ fun Bitmap.rotate(deg: Int): Bitmap {
     val m = Matrix().apply { postRotate(deg.toFloat()) }
     return Bitmap.createBitmap(this, 0, 0, width, height, m, true)
 }
-
-/*
-COMMANDED OUT COMPLEX LOGIC FOR FUTURE REFERENCE:
-// ROI Extraction and Domain Policing Logic removed for simplicity as per user request.
-// If you need to re-implement, references can be found in previous commits.
-*/

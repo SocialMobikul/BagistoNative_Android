@@ -13,12 +13,10 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="28" /> <!-- Only needed for API 28 and below -->
+        android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="28" /> <!-- Only needed for API 28 and below -->
-    <!-- For Android 13+ media permissions -->
+        android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <!-- For Android 10+ -->
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
 
     <uses-permission
@@ -39,7 +37,6 @@
         android:requestLegacyExternalStorage="true"
         tools:targetApi="31">
 
-        <!-- Startup Initialize for library preferences and theme -->
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
@@ -50,7 +47,6 @@
                 android:value="androidx.startup" />
         </provider>
 
-        <!-- Add the FileProvider here -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

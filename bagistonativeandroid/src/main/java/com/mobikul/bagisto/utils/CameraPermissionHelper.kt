@@ -37,12 +37,10 @@ class CameraPermissionHelper(private val fragment: Fragment) {
                 onGranted()
             }
             fragment.shouldShowRequestPermissionRationale(android.Manifest.permission.CAMERA) -> {
-                // Explain why you need permission
                 showPermissionRationale(fragment.requireContext())
                 requestPermissionLauncher.launch(android.Manifest.permission.CAMERA)
             }
             else -> {
-                // Directly request the permission
                 requestPermissionLauncher.launch(android.Manifest.permission.CAMERA)
             }
         }

@@ -1,4 +1,4 @@
-package com.mobikul.bagisto.components // Replace with your package name.
+package com.mobikul.bagisto.components
 
 import android.util.Log
 import android.view.Gravity
@@ -21,7 +21,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
-import com.mobikul.bagisto.R // Replace with your package name.
+import com.mobikul.bagisto.R
 import com.mobikul.bagisto.utils.ThemeStateHolder
 import dev.hotwire.core.bridge.BridgeComponent
 import dev.hotwire.core.bridge.BridgeDelegate
@@ -125,7 +125,6 @@ private fun MenuDropdown(
                     item.imageName?.let {
                         Text(
                             text = it,
-                            //fontFamily = FontFamily(Font(R.font.material_symbols)),
                             fontSize = 20.sp,
                             style = TextStyle(
                                 fontFeatureSettings = "liga"

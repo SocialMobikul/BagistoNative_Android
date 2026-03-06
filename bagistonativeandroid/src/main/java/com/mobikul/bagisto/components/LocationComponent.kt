@@ -27,15 +27,11 @@ class LocationComponent(
     override fun onReceive(message: Message) {
         Log.d(TAG, "LocationComponent message -> ${message}")
         when(message?.event){
-            //"addLocationButton" -> RequestLocationPermission(message)
             "addLocationButton" -> {
                 requestLocationPermission(message)
                 addLocationIcon(message)
             }
         }
-//        val theme = JSONObject(message.jsonData).getString("theme")
-//        Log.d(TAG, "theme is -> ${theme}")
-
     }
 
     private fun requestLocationPermission(message: Message) {
@@ -43,13 +39,7 @@ class LocationComponent(
             Log.d(TAG, "Location permission is granted -> $granted")
             if (granted) {
                 Log.d(TAG, "Location permission granted, message -> $message")
-                //addLocationIcon(message)
             } else {
-
-//                ToastHelper.showLongToast(
-//                    fragment.requireContext(),
-//                    fragment.requireContext().getString(R.string.location_permission_not_granted)
-//                )
             }
         }
     }
@@ -66,14 +56,9 @@ class LocationComponent(
                             Log.d(TAG, "Location permission is granted -> $granted")
                             if (granted) {
                                 Log.d(TAG, "Location permission granted, message -> $message")
-                                //addLocationIcon(message)
                                 getLocation(message,fragment.requireContext())
                             } else {
                                 requestLocationPermission(message)
-//                                ToastHelper.showLongToast(
-//                                    fragment.requireContext(),
-//                                    fragment.requireContext().getString(R.string.location_permission_not_granted)
-//                                )
                             }
                         }
 
@@ -108,7 +93,6 @@ class LocationComponent(
                 replyTo(message.event, jsonData = """{"latitude": "$latitude","longitude": "$longitude"}""")
             } ?: run {
                 Log.d(TAG,"location not available")
-                // Location not available
             }
         }
     }

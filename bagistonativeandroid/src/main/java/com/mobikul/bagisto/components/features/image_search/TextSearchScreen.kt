@@ -50,7 +50,6 @@ fun TextSearchScreen(
     var detectedWords by remember { mutableStateOf<Set<String>>(emptySet()) }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Camera Preview
         AndroidView(
             factory = { ctx ->
                 PreviewView(ctx).apply {
@@ -79,9 +78,9 @@ fun TextSearchScreen(
                                 textRecognizer.process(image)
                                     .addOnSuccessListener { visionText ->
                                         val words = visionText.text
-                                            .split("\\s+".toRegex()) // Split by whitespace
-                                            .filter { it.length > 2 } // Filter out short words
-                                            .map { it.trim().lowercase() } // Normalize
+                                            .split("\\s+".toRegex())
+                                            .filter { it.length > 2 }
+                                            .map { it.trim().lowercase() }
                                             .filterNot { word ->
                                                 word.isEmpty() || detectedWords.contains(word)
                                             }
@@ -118,7 +117,6 @@ fun TextSearchScreen(
             modifier = Modifier.fillMaxSize()
         )
 
-        // Vertical list of detected words on the left
         LazyColumn(
             modifier = Modifier
                 .align(Alignment.CenterStart)
