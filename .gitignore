@@ -19,3 +19,17 @@ bagistoandroidrunner/
 documents.md
 /Example/build
 /Example/app/build
+
+# Large binary files that should not be tracked
+*.zip
+*.apk
+*.jar
+
+# Build directories
+build/
+
+# Gradle directory
+.gradle/
+
+# Library binaries
+lib/
