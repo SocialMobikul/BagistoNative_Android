@@ -19,6 +19,32 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.QrCodeScanner
 
+/**
+ * Bridge component for barcode scanning functionality.
+ * 
+ * This component uses Google ML Kit Barcode Scanning to detect
+ * and decode barcodes from the camera feed.
+ * 
+ * Supported barcode formats:
+ * - QR Code
+ * - EAN-13, EAN-8
+ * - UPC-A, UPC-E
+ * - Code 39, Code 93, Code 128
+ * - ITF, Codabar
+ * - PDF417, Data Matrix, Aztec
+ * 
+ * @property name The bridge component name used in web calls
+ * @property bridgeDelegate Delegate for handling bridge communication
+ * @property activity The host activity for camera operations
+ * 
+ * @see BridgeComponent
+ * @see ApplicationConstants
+ * 
+ * @constructor
+ * @param name Component identifier for the bridge
+ * @param bridgeDelegate Bridge delegate for message handling
+ * @param activity Host activity for camera access
+ */
 class BarcodeScannerComponent(
     name: String,
     private val bridgeDelegate: BridgeDelegate<HotwireDestination>
@@ -28,6 +54,16 @@ class BarcodeScannerComponent(
     private val fragment: HotwireFragment
         get() = bridgeDelegate.destination.fragment as HotwireFragment
 
+    /**
+     * Handle incoming messages from the web layer.
+     * 
+     * Processes "connect", "home" (add scanner button) and
+     * "disconnect" (remove button) events.
+     * 
+     * @param message The incoming message from web layer
+     * 
+     * @see Message
+     */
     override fun onReceive(message: Message) {
         print("fgtgfhfghfg")
         Log.d(TAG,"dynamic message -> ${message}")
@@ -39,6 +75,16 @@ class BarcodeScannerComponent(
         }
     }
 
+    /**
+     * Add scanner button to the toolbar.
+     * 
+     * Creates a QR code scanner icon button that when clicked
+     * opens the camera for barcode scanning.
+     * 
+     * @param message The message containing button configuration
+     * 
+     * @see QrScannerScreen
+     */
     private fun addButton(message: Message) {
         Log.d(TAG,"add button message 1 -> ${message}")
         Log.d(TAG,"add button message 2 -> ${message.data<MessageData>()}")

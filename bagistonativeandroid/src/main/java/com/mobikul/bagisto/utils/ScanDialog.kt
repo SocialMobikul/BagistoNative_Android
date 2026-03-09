@@ -17,6 +17,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+/**
+ * Dialog for selecting scan type (image or text search).
+ * 
+ * This dialog presents the user with options to choose between
+ * image-based search and text-based search when using the scanner.
+ * 
+ * Features:
+ * - Image search option
+ * - Text search option
+ * - Cancel action
+ * 
+ * @param onImageSelected Callback when user selects image search
+ * @param onTextSelected Callback when user selects text search
+ * @param onDismiss Callback when dialog is dismissed
+ * 
+ * @see ImageSearchComponent
+ * @see ImageSearchScreen
+ * @see TextSearchScreen
+ * 
+ * @Composable
+ */
 @Composable
 fun ScanTypeSelectionDialog(
     onImageSelected: () -> Unit,

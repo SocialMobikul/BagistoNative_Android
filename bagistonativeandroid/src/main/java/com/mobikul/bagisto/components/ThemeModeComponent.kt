@@ -21,6 +21,28 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.json.JSONObject
 
+/**
+ * Bridge component for theme mode switching.
+ * 
+ * This component manages the app's theme mode (light/dark/system)
+ * and persists the user's preference.
+ * 
+ * Features:
+ * - Switch between light and dark themes
+ * - Follow system theme settings
+ * - Persist theme preference
+ * 
+ * @property name The bridge component name used in web calls
+ * @property bridgeDelegate Delegate for handling bridge communication
+ * 
+ * @see BridgeComponent
+ * @see ThemeComponent
+ * @see ThemeStateHolder
+ * 
+ * @constructor
+ * @param name Component identifier for the bridge
+ * @param bridgeDelegate Bridge delegate for message handling
+ */
 class ThemeModeComponent(
     name: String,
     private val bridgeDelegate: BridgeDelegate<HotwireDestination>
@@ -30,6 +52,14 @@ class ThemeModeComponent(
     private val fragment: HotwireFragment
         get() = bridgeDelegate.destination.fragment as HotwireFragment
 
+    /**
+     * Handle theme change requests from web layer.
+     * 
+     * Parses the incoming message to extract theme mode ('light', 'dark',
+     * or system default), updates app-wide theme, and persists preference.
+     * 
+     * @param message The bridge message containing theme mode configuration
+     */
     override fun onReceive(message: Message) {
         Log.d(TAG, "Theme change requested: ${message.jsonData}")
         val theme = JSONObject(message.jsonData).optString("mode", "light")
@@ -53,6 +83,15 @@ class ThemeModeComponent(
         }
     }
 
+    /**
+     * Update UI colors for the new theme.
+     * 
+     * Traverses the activity's view hierarchy and updates background
+     * and text colors to match the new theme. Handles Toolbars,
+     * SearchViews, and other views.
+     * 
+     * @param isDark Whether dark theme is being applied
+     */
     private fun updateUIColors(isDark: Boolean) {
         try {
             val activity = fragment.activity ?: return
@@ -67,12 +106,32 @@ class ThemeModeComponent(
         }
     }
 
+    /**
+     * Resolve theme attribute to color value.
+     * 
+     * Uses Android's theme resolution to get the actual color value
+     * for a given Material Design attribute.
+     * 
+     * @param activity The activity to resolve theme in
+     * @param attr The theme attribute to resolve (e.g., colorSurface)
+     * @return The resolved color as an integer
+     */
     private fun getThemeColor(activity: Activity, attr: Int): Int {
         val typedValue = TypedValue()
         activity.theme.resolveAttribute(attr, typedValue, true)
         return typedValue.data
     }
 
+    /**
+     * Recursively update view colors for theme.
+     * 
+     * Traverses the view hierarchy and applies background and icon colors
+     * to Toolbars, SearchViews, and ViewGroups (including ComposeViews).
+     * 
+     * @param view The root view to start updating from
+     * @param backgroundColor The background color to apply
+     * @param iconColor The icon/text color to apply
+     */
     private fun updateViewsRecursively(view: View, backgroundColor: Int, iconColor: Int) {
         when (view) {
             is Toolbar -> {
@@ -104,6 +163,15 @@ class ThemeModeComponent(
         }
     }
 
+    /**
+     * Apply color filter to SearchView elements.
+     * 
+     * Updates the colors of search icon, close button, search text,
+     * and search button within a SearchView.
+     * 
+     * @param searchView The SearchView to tint
+     * @param color The color to apply to search elements
+     */
     private fun tintSearchView(searchView: SearchView, color: Int) {
         try {
             val searchIcon = searchView.findViewById<ImageView>(androidx.appcompat.R.id.search_mag_icon)
@@ -125,9 +193,23 @@ class ThemeModeComponent(
         }
     }
 
+    /**
+     * Data class for theme mode message payload.
+     * 
+     * Represents the expected JSON structure when receiving theme
+     * configuration from the web layer.
+     * 
+     * @property theme The theme mode to apply
+     */
     @Serializable
     private data class MessageData(val theme: Theme?)
 
+    /**
+     * Enum representing available theme modes.
+     * 
+     * Defines the supported theme options that can be requested
+     * from the web layer.
+     */
     @Serializable
     private enum class Theme {
         @SerialName("light") LIGHT,

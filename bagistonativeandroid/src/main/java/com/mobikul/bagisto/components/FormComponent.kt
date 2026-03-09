@@ -21,6 +21,38 @@ import dev.hotwire.navigation.destinations.HotwireDestination
 import dev.hotwire.navigation.fragments.HotwireFragment
 import kotlinx.serialization.Serializable
 
+/**
+ * Bridge component for form submission handling.
+ * 
+ * This component provides a native submit button in the toolbar
+ * that can be enabled/disabled based on form validation. It allows
+ * the web layer to control button state and receive submission events.
+ * 
+ * @property name The bridge component name used in web calls
+ * @property bridgeDelegate Delegate for handling bridge communication
+ * 
+ * @see BridgeComponent
+ * @see androidx.compose.material3.Button
+ * 
+ * Usage from JavaScript:
+ * ```javascript
+ * // Add submit button
+ * window.BagistoNative.form.connect({
+ *     title: 'Submit Order'
+ * });
+ * 
+ * // Enable/disable button
+ * window.BagistoNative.form.enableSubmit();
+ * window.BagistoNative.form.disableSubmit();
+ * 
+ * // Remove button
+ * window.BagistoNative.form.disconnect();
+ * ```
+ * 
+ * @constructor
+ * @param name Component identifier for the bridge
+ * @param bridgeDelegate Bridge delegate for message handling
+ */
 class FormComponent(
     name: String,
     private val bridgeDelegate: BridgeDelegate<HotwireDestination>
@@ -30,6 +62,16 @@ class FormComponent(
     private val fragment: HotwireFragment
         get() = bridgeDelegate.destination.fragment as HotwireFragment
 
+    /**
+     * Handle incoming messages from the web layer.
+     * 
+     * Processes events: "connect" (add button), "disconnect" (remove),
+     * "enableSubmit" (enable), "disableSubmit" (disable).
+     * 
+     * @param message The incoming message from web layer
+     * 
+     * @see Message
+     */
     override fun onReceive(message: Message) {
         when (message.event) {
             "connect" -> addButton(message)
@@ -40,6 +82,16 @@ class FormComponent(
         }
     }
 
+    /**
+     * Add submit button to the toolbar.
+     * 
+     * Creates a Material 3 Button composable and adds it
+     * to the navigation toolbar.
+     * 
+     * @param message The message containing button configuration
+     * 
+     * @see Button
+     */
     private fun addButton(message: Message) {
         val data = message.data<MessageData>() ?: return
         removeButton()

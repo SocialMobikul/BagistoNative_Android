@@ -31,6 +31,39 @@ import dev.hotwire.navigation.fragments.HotwireFragment
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/**
+ * Bridge component for adding dropdown menu to the navigation toolbar.
+ * 
+ * This component enables the web layer to add a context menu
+ * (three-dot menu) to the Android toolbar with customizable menu items.
+ * 
+ * @property name The bridge component name used in web calls
+ * @property bridgeDelegate Delegate for handling bridge communication
+ * 
+ * @see BridgeComponent
+ * @see androidx.compose.material3.DropdownMenu
+ * 
+ * Usage from JavaScript:
+ * ```javascript
+ * // Add menu with items
+ * window.BagistoNative.menu.connect({
+ *     items: [
+ *         { title: 'Profile', imageName: 'user' },
+ *         { title: 'Settings', imageName: 'settings' },
+ *         { title: 'Logout', imageName: 'logout' }
+ *     ]
+ * });
+ * 
+ * // Listen for selection
+ * window.BagistoNative.menu.connect((index) => {
+ *     console.log('Selected item:', index);
+ * });
+ * ```
+ * 
+ * @constructor
+ * @param name Component identifier for the bridge
+ * @param bridgeDelegate Bridge delegate for message handling
+ */
 class MenuComponent(
     name: String,
     private val bridgeDelegate: BridgeDelegate<HotwireDestination>
@@ -40,6 +73,15 @@ class MenuComponent(
     private val fragment: HotwireFragment
         get() = bridgeDelegate.destination.fragment as HotwireFragment
 
+    /**
+     * Handle incoming messages from the web layer.
+     * 
+     * Processes "connect" to add menu, "disconnect" to remove it.
+     * 
+     * @param message The incoming message from web layer
+     * 
+     * @see Message
+     */
     override fun onReceive(message: Message) {
         when (message.event) {
             "connect" -> addMenuButton(message)

@@ -19,6 +19,31 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.mobikul.bagisto.utils.ThemeStateHolder
 
+/**
+ * Composable function for toolbar action buttons.
+ * 
+ * This Jetpack Compose component renders icons in the navigation toolbar
+ * based on the provided image name. Supports theming (light/dark mode)
+ * and automatic icon selection from Material Icons.
+ * 
+ * @param imageName Name of the icon to display (sunny, dark_mode, image_search, qr_code_scanner, share, location, logout, download)
+ * @param onClick Click handler for the button
+ * 
+ * @see androidx.compose.material3.Icon
+ * @see androidx.compose.material3.IconButton
+ * 
+ * Supported icons:
+ * - sunny, dark_mode, image_search, qr_code_scanner
+ * - share, location, logout, download
+ * 
+ * Usage:
+ * ```kotlin
+ * ToolbarButton(
+ *     imageName = "location",
+ *     onClick = { /* handle click */ }
+ * )
+ * ```
+ */
 @Composable
 fun ToolbarButton(
     imageName: String,

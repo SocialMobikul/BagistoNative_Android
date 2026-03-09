@@ -45,6 +45,27 @@ enum class SearchState { LIVE, CAPTURED, RESULT }
 
 @OptIn(ExperimentalAnimationApi::class)
 @SuppressLint("UnsafeOptInUsageError")
+/**
+ * Full-screen image search composable.
+ * 
+ * This screen provides functionality for capturing or selecting
+ * images to search for products using ML Kit image labeling.
+ * 
+ * Features:
+ * - Camera capture for product photos
+ * - Gallery image selection
+ * - ML Kit image labeling integration
+ * - Search results display
+ * 
+ * @param onLabelSelected Callback invoked with search results (product label)
+ * @param onBack Callback invoked when user closes the screen
+ * 
+ * @see ImageSearchComponent
+ * @see ImageLabelAnalyzer
+ * @see CameraPermissionHelper
+ * 
+ * @Composable
+ */
 @Composable
 fun ImageSearchScreen(
     onLabelSelected: (String) -> Unit,
@@ -199,6 +220,17 @@ fun ImageSearchScreen(
     }
 }
 
+/**
+ * Perform hybrid image search using OCR, image labeling, and object detection.
+ * 
+ * Runs three ML Kit detectors in parallel and combines results:
+ * - TextRecognition for OCR
+ * - ImageLabeling for product labels
+ * - ObjectDetection for object classification
+ * 
+ * @param bitmap The captured image to analyze
+ * @return List of search labels sorted by confidence
+ */
 suspend fun runSimplifiedHybridSearch(bitmap: Bitmap): List<String> = withContext(Dispatchers.Default) {
     if (bitmap.isRecycled) return@withContext emptyList()
     
@@ -277,6 +309,15 @@ suspend fun runSimplifiedHybridSearch(bitmap: Bitmap): List<String> = withContex
         .toList()
 }
 
+/**
+ * Validate OCR extracted text.
+ * 
+ * Filters out invalid texts like numbers only, special characters only,
+ * or repeated characters.
+ * 
+ * @param text The OCR text to validate
+ * @return true if text is valid for product search
+ */
 private fun isValidOCRText(text: String): Boolean {
     if (text.length < 3) return false
     if (text.matches(Regex("^[^a-zA-Z0-9]*$"))) return false
@@ -287,6 +328,13 @@ private fun isValidOCRText(text: String): Boolean {
     return true
 }
 
+/**
+ * Expandable pill button composable.
+ * 
+ * @param text Label text to display
+ * @param expanded Whether the pill is expanded
+ * @param onToggle Callback when toggle button is clicked
+ */
 @Composable
 fun Pill(text: String, expanded: Boolean, onToggle: () -> Unit) {
     Surface(shape = RoundedCornerShape(14.dp), color = Color.White.copy(0.96f), modifier = Modifier.fillMaxWidth().height(54.dp)) {
@@ -297,6 +345,14 @@ fun Pill(text: String, expanded: Boolean, onToggle: () -> Unit) {
     }
 }
 
+/**
+ * Action button composable.
+ * 
+ * @param text Button label
+ * @param isBlue Whether to use blue primary color
+ * @param modifier Modifier for styling
+ * @param onClick Click handler
+ */
 @Composable
 fun Btn(text: String, isBlue: Boolean, modifier: Modifier, onClick: () -> Unit) {
     Surface(onClick = onClick, color = if (isBlue) Color(0xFF007AFF) else Color(0xFF333333), shape = RoundedCornerShape(14.dp), modifier = modifier.height(52.dp)) {
@@ -304,11 +360,24 @@ fun Btn(text: String, isBlue: Boolean, modifier: Modifier, onClick: () -> Unit) 
     }
 }
 
+/**
+ * Convert ImageProxy to Bitmap.
+ * 
+ * @receiver The ImageProxy to convert
+ * @return Bitmap representation of the image
+ */
 fun ImageProxy.toBitmap(): Bitmap {
     val b = planes[0].buffer; val bytes = ByteArray(b.remaining()); b.get(bytes)
     return android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
 }
 
+/**
+ * Rotate bitmap by specified degrees.
+ * 
+ * @receiver The Bitmap to rotate
+ * @param deg Rotation angle in degrees
+ * @return Rotated bitmap
+ */
 fun Bitmap.rotate(deg: Int): Bitmap {
     if (deg == 0) return this
     val m = Matrix().apply { postRotate(deg.toFloat()) }

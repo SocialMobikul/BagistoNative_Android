@@ -17,6 +17,38 @@ import dev.hotwire.navigation.destinations.HotwireDestination
 import dev.hotwire.navigation.fragments.HotwireFragment
 import org.json.JSONObject
 
+/**
+ * Bridge component for file download functionality.
+ * 
+ * This component enables the web layer to download files using
+ * Android's DownloadManager. It handles:
+ * - Storage permission requests
+ * - Download queue management
+ * - Download completion notifications
+ * - File saving to Downloads directory
+ * 
+ * @property name The bridge component name used in web calls
+ * @property bridgeDelegate Delegate for handling bridge communication
+ * 
+ * @see BridgeComponent
+ * @see android.app.DownloadManager
+ * 
+ * Permissions Required:
+ * - WRITE_EXTERNAL_STORAGE (Android < 10)
+ * - READ_EXTERNAL_STORAGE
+ * 
+ * Usage from JavaScript:
+ * ```javascript
+ * window.BagistoNative.download.download({
+ *     downloadLink: 'https://example.com/file.pdf',
+ *     fileName: 'my-document.pdf'
+ * });
+ * ```
+ * 
+ * @constructor
+ * @param name Component identifier for the bridge
+ * @param bridgeDelegate Bridge delegate for message handling
+ */
 class DownloadComponent(
     name: String,
     private val bridgeDelegate: BridgeDelegate<HotwireDestination>
@@ -29,6 +61,17 @@ class DownloadComponent(
     private var downloadCompleteReceiver: BroadcastReceiver? = null
     private var isReceiverRegistered = false
 
+    /**
+     * Handle incoming messages from the web layer.
+     * 
+     * Processes "download" event to initiate file download
+     * using Android's DownloadManager.
+     * 
+     * @param message The incoming message from web layer
+     * 
+     * @see Message
+     * @see DownloadManager
+     */
     override fun onReceive(message: Message) {
         Log.d(TAG, "DownloadComponent message -> ${message}")
         when(message.event) {

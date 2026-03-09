@@ -15,6 +15,26 @@ import dev.hotwire.navigation.destinations.HotwireDestination
 import dev.hotwire.navigation.fragments.HotwireFragment
 import org.json.JSONObject
 
+/**
+ * Bridge component for navigation history management.
+ * 
+ * This component provides access to the web view's navigation history,
+ * allowing the web layer to query back/forward navigation state.
+ * 
+ * Features:
+ * - Check if back navigation is possible
+ * - Check if forward navigation is possible
+ * - Query navigation stack size
+ * 
+ * @property name The bridge component name used in web calls
+ * @property bridgeDelegate Delegate for handling bridge communication
+ * 
+ * @see BridgeComponent
+ * 
+ * @constructor
+ * @param name Component identifier for the bridge
+ * @param bridgeDelegate Bridge delegate for message handling
+ */
 class NavigationHistoryComponent(
     name: String,
     private val bridgeDelegate: BridgeDelegate<HotwireDestination>
@@ -24,6 +44,14 @@ class NavigationHistoryComponent(
         get() = bridgeDelegate.destination.fragment as HotwireFragment
 
 
+    /**
+     * Handle incoming bridge messages.
+     * 
+     * Processes messages from the web layer and dispatches to
+     * appropriate handlers based on the event type.
+     * 
+     * @param message The incoming bridge message containing event and data
+     */
     override fun onReceive(message: Message) {
         Log.d(TAG, "historysync message -> $message")
         when (message.event) {
@@ -36,6 +64,15 @@ class NavigationHistoryComponent(
 
 
 
+    /**
+     * Handle the 'history' event from web layer.
+     * 
+     * Parses the message to extract URL and title, then updates the
+     * toolbar accordingly. Shows/hides back button based on whether
+     * the current URL differs from the root URL.
+     * 
+     * @param message The message containing navigation history data
+     */
     private fun handleShowBackButtonEvent(message: Message) {
         try {
             val jsonData = JSONObject(message.jsonData)
@@ -73,6 +110,15 @@ class NavigationHistoryComponent(
     }
 
 
+    /**
+     * Configure toolbar with back button navigation.
+     * 
+     * Sets the navigation icon and click listener to handle back
+     * navigation. Attempts primary approach with default back icon,
+     * falls back to alternative if that fails.
+     * 
+     * @param toolbar The toolbar to configure with back navigation
+     */
     private fun showBackButtonUsingToolbar(toolbar: Toolbar) {
         try {
             val backIcon = R.drawable.abc_ic_ab_back_material
@@ -117,6 +163,14 @@ class NavigationHistoryComponent(
         makeNavigationButtonVisible(toolbar)
     }
 
+    /**
+     * Check if WebView can navigate back.
+     * 
+     * Queries the WebView's navigation stack to determine if backward
+     * navigation is possible.
+     * 
+     * @return true if WebView has history to go back to, false otherwise
+     */
     private fun canGoBackInWebView(): Boolean {
         val canGoBack = bridgeDelegate.destination.navigator?.session?.webView?.canGoBack() ?: false
         Log.d(TAG, "WebView canGoBack: $canGoBack")
@@ -125,6 +179,14 @@ class NavigationHistoryComponent(
 
 
 
+    /**
+     * Make all ImageView children in toolbar visible.
+     * 
+     * Recursively traverses toolbar's view hierarchy to ensure all
+     * ImageView elements are visible (needed for back button icon).
+     * 
+     * @param toolbar The toolbar containing ImageView children
+     */
     private fun makeNavigationButtonVisible(toolbar: Toolbar) {
         for (i in 0 until toolbar.childCount) {
             val child = toolbar.getChildAt(i)
@@ -138,6 +200,14 @@ class NavigationHistoryComponent(
         }
     }
 
+    /**
+     * Recursively make ImageView children visible in ViewGroup.
+     * 
+     * Helper function for makeNavigationButtonVisible that handles
+     * nested ViewGroups.
+     * 
+     * @param viewGroup The ViewGroup to traverse for ImageView children
+     */
     private fun makeViewGroupChildrenVisible(viewGroup: ViewGroup) {
         for (i in 0 until viewGroup.childCount) {
             val child = viewGroup.getChildAt(i)
@@ -151,6 +221,12 @@ class NavigationHistoryComponent(
     }
 
 
+    /**
+     * Hide the back button when at root URL.
+     * 
+     * Removes the navigation icon and click listener from toolbar
+     * when the user is at the root/first page.
+     */
     private fun handleBackPress() {
         fragment.requireActivity().runOnUiThread {
             try {
@@ -170,6 +246,13 @@ class NavigationHistoryComponent(
         }
     }
 
+    /**
+     * Hide the back button programmatically.
+     * 
+     * Alternative method to hide back button with different approach.
+     * 
+     * @param message The bridge message (unused but required by interface)
+     */
     private fun hidebackbutton(message: Message) {
         fragment.requireActivity().runOnUiThread {
             try {
@@ -187,6 +270,14 @@ class NavigationHistoryComponent(
         }
     }
 
+    /**
+     * Hide navigation icon in toolbar.
+     * 
+     * Searches toolbar's view hierarchy for navigation icon ImageView
+     * and hides it. Uses both view traversal and resource ID lookup.
+     * 
+     * @param toolbar The toolbar to hide navigation icon in
+     */
     private fun hideToolbarNavigationIcon(toolbar: Toolbar) {
         try {
             for (i in 0 until toolbar.childCount) {
@@ -209,6 +300,14 @@ class NavigationHistoryComponent(
         }
     }
 
+    /**
+     * Recursively hide navigation icon in nested ViewGroups.
+     * 
+     * Helper function for hideToolbarNavigationIcon that traverses
+     * nested view hierarchy.
+     * 
+     * @param viewGroup The ViewGroup to search for navigation icon
+     */
     private fun hideNavigationIconInViewGroup(viewGroup: ViewGroup) {
         for (i in 0 until viewGroup.childCount) {
             val child = viewGroup.getChildAt(i)

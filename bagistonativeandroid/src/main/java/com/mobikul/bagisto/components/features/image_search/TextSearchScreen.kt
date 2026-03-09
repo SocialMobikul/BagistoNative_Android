@@ -40,6 +40,25 @@ import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 
 @androidx.camera.core.ExperimentalGetImage
 @SuppressLint("UnsafeOptInUsageError")
+/**
+ * Text-based product search composable.
+ * 
+ * This screen provides a search interface for text-based product
+ * search after image labeling has identified product labels.
+ * 
+ * Features:
+ * - Live camera text recognition
+ * - Pre-filled search from detected text
+ * - Search result handling
+ * 
+ * @param onTextDetected Callback with detected/search text
+ * @param onBack Callback invoked when user closes the screen
+ * 
+ * @see ImageLabelAnalyzer
+ * @see ImageSearchComponent
+ * 
+ * @Composable
+ */
 @Composable
 fun TextSearchScreen(
     onTextDetected: (String) -> Unit,
@@ -133,6 +152,14 @@ fun TextSearchScreen(
     BackHandler(onBack = onBack)
 }
 
+/**
+ * Card composable for detected word.
+ * 
+ * Displays a single detected word that user can tap to search.
+ * 
+ * @param word The word to display
+ * @param onClick Click handler for selecting word
+ */
 @Composable
 fun WordCard(word: String, onClick: () -> Unit) {
     Box(

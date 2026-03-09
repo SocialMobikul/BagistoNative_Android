@@ -45,6 +45,26 @@ import kotlinx.coroutines.delay
 import kotlin.math.min
 
 
+/**
+ * Full-screen QR code scanner composable.
+ * 
+ * This screen provides a complete camera-based QR code scanning
+ * experience using ML Kit's on-device barcode detection.
+ * 
+ * Features:
+ * - Real-time QR code detection
+ * - Camera preview with scan overlay
+ * - Automatic result handling
+ * - Flash toggle support
+ * 
+ * @param onScanComplete Callback invoked when a QR code is successfully scanned, receives the scanned value
+ * @param onClose Callback invoked when user closes the scanner
+ * 
+ * @see BarcodeScannerComponent
+ * @see CameraPermissionHelper
+ * 
+ * @Composable
+ */
 @Composable
 fun QrScannerScreen(
     onScanComplete: (String) -> Unit,
@@ -222,6 +242,17 @@ fun QrScannerScreen(
     BackHandler(onBack = onBack)
 }
 
+/**
+ * Internal analyzer for processing camera frames.
+ * 
+ * Uses ML Kit BarcodeScanning to detect QR codes and barcodes
+ * in camera frames.
+ * 
+ * @param onBarcodeDetected Callback when a barcode is successfully detected
+ * @param isAlreadyScanned Check if scanning already completed
+ * @property onBarcodeDetected Callback invoked with detected barcode value
+ * @property isAlreadyScanned Function to check if scan already occurred
+ */
 private class QrCodeAnalyzer(
     private val onBarcodeDetected: (String) -> Unit,
     private val isAlreadyScanned: () -> Boolean

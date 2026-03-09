@@ -1,5 +1,11 @@
 package com.mobikul.bagisto.utils
 
+/**
+ * Application-wide constants for Bagisto Native SDK.
+ * 
+ * This file contains string constants used across the SDK
+ * for bridge component names, event names, and configuration keys.
+ */
 object ApplicationConstants {
     val ROOT_URL = "https://bagisto-native-commerce.vercel.app/"
     val DEFAULT_FCM_TOPICS = arrayOf("hotwire_mobikul_woocommerece")

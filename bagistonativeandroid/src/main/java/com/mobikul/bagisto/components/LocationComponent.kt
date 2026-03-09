@@ -15,6 +15,42 @@ import dev.hotwire.core.bridge.Message
 import dev.hotwire.navigation.destinations.HotwireDestination
 import dev.hotwire.navigation.fragments.HotwireFragment
 
+/**
+ * Bridge component for GPS location services.
+ * 
+ * This component provides location functionality including:
+ * - Adding location button to navigation toolbar
+ * - Requesting location permissions
+ * - Retrieving current GPS coordinates
+ * - Returning latitude/longitude to web layer
+ * 
+ * @property name The bridge component name used in web calls
+ * @property bridgeDelegate Delegate for handling bridge communication
+ * 
+ * @see LocationHelper
+ * @see PermissionUtils
+ * @see BridgeComponent
+ * 
+ * Required Permissions:
+ * - ACCESS_FINE_LOCATION
+ * - ACCESS_COARSE_LOCATION
+ * 
+ * Usage from JavaScript:
+ * ```javascript
+ * // Add location button to toolbar
+ * window.BagistoNative.location.addLocationButton();
+ * 
+ * // Get current location (after button click)
+ * window.BagistoNative.location.getLocation().then(location => {
+ *     console.log('Latitude:', location.latitude);
+ *     console.log('Longitude:', location.longitude);
+ * });
+ * ```
+ * 
+ * @constructor
+ * @param name Component identifier for the bridge
+ * @param bridgeDelegate Bridge delegate for message handling
+ */
 class LocationComponent(
     name: String,
     private val bridgeDelegate: BridgeDelegate<HotwireDestination>
@@ -24,6 +60,16 @@ class LocationComponent(
     private val fragment: HotwireFragment
         get() = bridgeDelegate.destination.fragment as HotwireFragment
 
+    /**
+     * Handle incoming messages from the web layer.
+     * 
+     * Processes events like "addLocationButton" to add location
+     * button to toolbar and handle location requests.
+     * 
+     * @param message The incoming message from web layer containing event and data
+     * 
+     * @see Message
+     */
     override fun onReceive(message: Message) {
         Log.d(TAG, "LocationComponent message -> ${message}")
         when(message?.event){
@@ -34,6 +80,16 @@ class LocationComponent(
         }
     }
 
+    /**
+     * Request location permission from the user.
+     * 
+     * Uses PermissionUtils to request fine and coarse location
+     * permissions from the user.
+     * 
+     * @param message The original message triggering the permission request
+     * 
+     * @see PermissionUtils
+     */
     private fun requestLocationPermission(message: Message) {
         PermissionUtils.checkAndRequestLocationPermission(fragment.requireActivity()) { granted ->
             Log.d(TAG, "Location permission is granted -> $granted")
@@ -44,6 +100,17 @@ class LocationComponent(
         }
     }
 
+    /**
+     * Add location icon button to the navigation toolbar.
+     * 
+     * Creates a ComposeView with a location button that when clicked
+     * will request location permission and then get the current GPS coordinates.
+     * 
+     * @param message The original message triggering the icon addition
+     * 
+     * @see ToolbarButton
+     * @see ComposeView
+     */
     private fun addLocationIcon(message: Message) {
         removeButton()
         val composeView = ComposeView(fragment.requireContext()).apply {
@@ -76,12 +143,30 @@ class LocationComponent(
         toolbar?.addView(composeView, layoutParams)
     }
 
+    /**
+     * Remove the location button from the toolbar.
+     * 
+     * Cleans up by removing the previously added location button
+     * from the navigation toolbar.
+     */
     private fun removeButton() {
         val toolbar = fragment.toolbarForNavigation()
         val button = toolbar?.findViewById<ComposeView>(buttonId)
         toolbar?.removeView(button)
     }
 
+    /**
+     * Get the current GPS location of the device.
+     * 
+     * Uses LocationHelper to obtain the current latitude and longitude,
+     * then sends the coordinates back to the web layer via replyTo.
+     * 
+     * @param message The original message triggering the location request
+     * @param context Android context for LocationHelper initialization
+     * 
+     * @see LocationHelper
+     * @see BridgeComponent.replyTo
+     */
     private fun getLocation(message: Message, context: Context) {
         Log.d(TAG,"location icon pressed")
         val locationHelper = LocationHelper(context)
