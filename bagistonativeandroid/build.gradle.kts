@@ -16,6 +16,11 @@ android {
         testInstrumentationRunner =
             "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+        
+        // Only include arm64-v8a for better 16KB page size compatibility
+        ndk {
+            abiFilters += "arm64-v8a"
+        }
     }
 
     buildTypes {
@@ -41,6 +46,18 @@ android {
 
     buildFeatures {
         compose = true
+    }
+
+    packaging {
+        // Enable legacy packaging to extract native libraries to filesystem
+        // This is required for 16KB page size compatibility when dependencies
+        // (like ML Kit) require native library extraction
+        jniLibs {
+            useLegacyPackaging = true
+        }
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
     }
 }
 
