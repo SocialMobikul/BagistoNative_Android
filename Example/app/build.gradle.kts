@@ -58,7 +58,7 @@ dependencies {
     implementation("androidx.multidex:multidex:2.0.1")
     // BagistoNative Android SDK via JitPack
     // Check available versions: https://jitpack.io/#SocialMobikul/BagistoNative_Android/
-    implementation("com.github.SocialMobikul:BagistoNative_Android:1.0.7")
+    implementation("com.github.SocialMobikul:BagistoNative_Android:1.0.6")
 
     // AndroidX Core - matching SDK versions
     implementation("androidx.core:core-ktx:1.15.0")
