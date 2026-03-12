@@ -84,10 +84,9 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.6.0")
     implementation("androidx.activity:activity-compose:1.8.0")
 
-    // Hotwire - force consistent version
+    // Hotwire
     implementation("dev.hotwire:core:1.2.3")
     implementation("dev.hotwire:navigation-fragments:1.2.3")
-    implementation("dev.hotwire:navigation:1.2.3")
 
     // Camera
     implementation("androidx.camera:camera-core:1.3.0")
