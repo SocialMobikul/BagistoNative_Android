@@ -1,6 +1,7 @@
 package com.example.bagisto_native_example
 
 import android.app.Application
+import androidx.multidex.MultiDexApplication
 import dev.hotwire.core.bridge.KotlinXJsonConverter
 import dev.hotwire.core.config.Hotwire
 
@@ -11,7 +12,7 @@ import dev.hotwire.core.config.Hotwire
  * 
  * @see Hotwire
  */
-class BagistoExampleApplication : Application() {
+class BagistoExampleApplication : MultiDexApplication() {
     
     override fun onCreate() {
         super.onCreate()

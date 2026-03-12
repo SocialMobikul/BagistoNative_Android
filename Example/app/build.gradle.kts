@@ -15,6 +15,8 @@ android {
         versionCode = 1
         versionName = "1.0.0"
 
+        multiDexEnabled = true
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -52,6 +54,8 @@ android {
 }
 
 dependencies {
+    // Multidex
+    implementation("androidx.multidex:multidex:2.0.1")
     // BagistoNative Android SDK via JitPack
     // Check available versions: https://jitpack.io/#SocialMobikul/BagistoNative_Android/
     implementation("com.github.SocialMobikul:BagistoNative_Android:1.0.6")
