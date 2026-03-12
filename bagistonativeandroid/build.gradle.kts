@@ -70,6 +70,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     api(libs.hotwire.core)
     api(libs.hotwire.navigation.fragments)
+    api("dev.hotwire:activity:1.2.3")
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))

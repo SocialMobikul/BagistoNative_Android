@@ -91,6 +91,7 @@ dependencies {
     // Hotwire
     implementation("dev.hotwire:core:1.2.3")
     implementation("dev.hotwire:navigation-fragments:1.2.3")
+    implementation("dev.hotwire:activity:1.2.3")
 
     // Camera
     implementation("androidx.camera:camera-core:1.3.0")
